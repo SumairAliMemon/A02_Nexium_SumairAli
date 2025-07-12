@@ -1,36 +1,84 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Blog Scraper & AI Summarizer
 
-## Getting Started
+A simple Next.js application that scrapes blog content, generates AI summaries, translates to Urdu, and stores data in dual databases.
 
-First, run the development server:
+## Features
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+- **URL Input**: Simple search bar to input blog URLs
+- **Web Scraping**: Extracts content from blog posts
+- **AI Summarization**: Static logic-based summarization
+- **Urdu Translation**: JavaScript dictionary-based translation
+- **Dual Storage**: Summaries in Supabase (PostgreSQL), full text in MongoDB
+- **View Modes**: 
+  - Scraper: Input URL and get results
+  - Get Summaries: View all summaries with pagination (5 per page)
+  - Get Full Texts: View all full texts with pagination (5 per page)
+
+## Setup
+
+1. **Install Dependencies**
+   ```bash
+   npm install
+   ```
+
+2. **Environment Variables**
+   Update `.env.local` with your MongoDB connection string:
+   ```env
+   # Supabase (already configured)
+   NEXT_PUBLIC_SUPABASE_URL=https://aqidomqkhpbibqzybalc.supabase.co
+   NEXT_PUBLIC_SUPABASE_ANON_KEY=your_anon_key
+   SUPABASE_SERVICE_ROLE_KEY=your_service_role_key
+
+   # MongoDB (add your connection string)
+   MONGODB_URI=your_mongodb_connection_string
+   MONGODB_DB=blog_scraper
+   ```
+
+3. **Database Setup**
+   - Run the SQL in `database/supabase_schema.sql` in your Supabase project
+   - MongoDB collections are created automatically
+
+4. **Run Development Server**
+   ```bash
+   npm run dev
+   ```
+
+## Usage
+
+1. **Scraper Mode**: Enter a blog URL, click "Scrape & Summarize"
+2. **Get Summaries**: View all saved summaries with pagination
+3. **Get Full Texts**: View all full content with pagination
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+3. Set up environment variables:
+Create a `.env.local` file in the root directory and add:
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```env
+# Supabase Configuration
+NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
+SUPABASE_SERVICE_ROLE_KEY=your_supabase_service_role_key
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+# MongoDB Configuration
+MONGODB_URI=your_mongodb_connection_string
+MONGODB_DB=blog_scraper
 
-## Learn More
+# Application Configuration
+NEXT_PUBLIC_APP_URL=http://localhost:3000
+```
 
-To learn more about Next.js, take a look at the following resources:
+4. Set up Supabase database:
+- Go to your Supabase project dashboard
+- Navigate to SQL Editor
+- Run the SQL script from `database/supabase_schema.sql`
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+5. Set up MongoDB:
+- Create a new database named `blog_scraper`
+- The `blog_contents` collection will be created automatically
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+6. Run the development server:
+```bash
+npm run dev
+```
 
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+7. Open [http://localhost:3000](http://localhost:3000) in your browser
