@@ -38,7 +38,8 @@ interface PaginationData {
   per_page: number;
 }
 
-export default function Home() {
+
+export  default function Home() {
   const [url, setUrl] = useState('');
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<ScrapeResult | null>(null);
@@ -132,28 +133,33 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-900 p-4">
-      <div className="max-w-6xl mx-auto">
-        <h1 className="text-3xl font-bold text-center mb-8 text-white">
-          Blog Scraper & AI Summarizer
+    <div className="min-h-screen bg-gradient-to-br from-[#0d1117] via-[#161b22] to-[#21262d] font-inter p-2 md:p-6 transition-colors duration-700">
+      <div className="max-w-4xl mx-auto">
+        <h1 className="text-4xl md:text-5xl font-extrabold text-center mb-10 tracking-tight">
+          <span className="bg-clip-text text-transparent bg-gradient-to-r from-[#f43f5e] via-[#f59e42] to-[#38bdf8] animate-gradient-x">Blog Scraper & AI Summarizer</span>
         </h1>
-        
-        {/* Navigation Buttons */}
-        <div className="flex justify-center gap-4 mb-8">
+        {/* GitHub-style Navigation Buttons */}
+        <div className="flex flex-wrap justify-center gap-4 mb-10">
           <Button 
             variant={viewMode === 'scraper' ? 'default' : 'outline'}
+            size="lg"
+            className={`rounded-md px-6 py-2 font-semibold border border-[#30363d] shadow-lg transition-all duration-300 ${viewMode === 'scraper' ? 'bg-gradient-to-r from-[#238636] to-[#2ea043] text-white scale-105 hover:scale-110 hover:shadow-xl' : 'bg-[#161b22] text-[#c9d1d9] hover:bg-[#21262d] hover:scale-105'}`}
             onClick={() => handleViewChange('scraper')}
           >
             Scraper
           </Button>
           <Button 
             variant={viewMode === 'summaries' ? 'default' : 'outline'}
+            size="lg"
+            className={`rounded-md px-6 py-2 font-semibold border border-[#30363d] shadow-lg transition-all duration-300 ${viewMode === 'summaries' ? 'bg-gradient-to-r from-[#0969da] to-[#218bff] text-white scale-105 hover:scale-110 hover:shadow-xl' : 'bg-[#161b22] text-[#c9d1d9] hover:bg-[#21262d] hover:scale-105'}`}
             onClick={() => handleViewChange('summaries')}
           >
             Get Summaries
           </Button>
           <Button 
             variant={viewMode === 'full-texts' ? 'default' : 'outline'}
+            size="lg"
+            className={`rounded-md px-6 py-2 font-semibold border border-[#30363d] shadow-lg transition-all duration-300 ${viewMode === 'full-texts' ? 'bg-gradient-to-r from-[#8250df] to-[#a371f7] text-white scale-105 hover:scale-110 hover:shadow-xl' : 'bg-[#161b22] text-[#c9d1d9] hover:bg-[#21262d] hover:scale-105'}`}
             onClick={() => handleViewChange('full-texts')}
           >
             Get Full Texts
@@ -162,9 +168,9 @@ export default function Home() {
 
         {/* Error Display */}
         {error && (
-          <Card className="mb-4 border-red-200 bg-red-50">
+          <Card className="mb-4 border-red-300 bg-red-100 animate-pulse">
             <CardContent className="pt-6">
-              <p className="text-red-600">{error}</p>
+              <p className="text-red-700 text-center font-semibold">{error}</p>
             </CardContent>
           </Card>
         )}
@@ -172,10 +178,10 @@ export default function Home() {
         {/* Scraper View */}
         {viewMode === 'scraper' && (
           <>
-            <Card className="mb-8">
+            <Card className="mb-10 shadow-xl border-2 border-indigo-400/30">
               <CardHeader>
-                <CardTitle>Enter Blog URL</CardTitle>
-                <CardDescription>
+                <CardTitle className="text-xl md:text-2xl font-bold">Enter Blog URL</CardTitle>
+                <CardDescription className="text-base text-gray-300">
                   Paste any blog URL to extract, summarize, and translate content
                 </CardDescription>
               </CardHeader>
@@ -188,11 +194,12 @@ export default function Home() {
                     onChange={(e) => setUrl(e.target.value)}
                     disabled={loading}
                     required
+                    className="rounded-lg border-2 border-indigo-300 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-400"
                   />
-                  <Button type="submit" disabled={loading} className="w-full">
+                  <Button type="submit" disabled={loading} className="w-full py-3 text-lg font-semibold rounded-lg bg-gradient-to-r from-indigo-500 to-purple-500 shadow-md hover:scale-105 transition-transform">
                     {loading ? (
                       <>
-                        <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                        <Loader2 className="w-5 h-5 mr-2 animate-spin" />
                         Processing...
                       </>
                     ) : (
@@ -204,24 +211,24 @@ export default function Home() {
             </Card>
 
             {result && (
-              <div className="grid gap-6 md:grid-cols-2">
-                <Card>
+              <div className="grid gap-8 md:grid-cols-2">
+                <Card className="shadow-lg border-2 border-indigo-300/30 bg-white/80">
                   <CardHeader>
-                    <CardTitle>English Summary</CardTitle>
+                    <CardTitle className="text-lg font-bold text-indigo-700">English Summary</CardTitle>
                   </CardHeader>
                   <CardContent>
-                    <h3 className="font-semibold mb-2">{result.title}</h3>
-                    <p className="text-gray-700">{result.summary}</p>
+                    <h3 className="font-semibold mb-2 text-indigo-900">{result.title}</h3>
+                    <p className="text-gray-800 text-base leading-relaxed">{result.summary}</p>
                   </CardContent>
                 </Card>
 
-                <Card>
+                <Card className="shadow-lg border-2 border-pink-300/30 bg-white/80">
                   <CardHeader>
-                    <CardTitle>Urdu Translation</CardTitle>
+                    <CardTitle className="text-lg font-bold text-pink-700">Urdu Translation</CardTitle>
                   </CardHeader>
                   <CardContent>
-                    <h3 className="font-semibold mb-2" dir="rtl">{result.title}</h3>
-                    <p className="text-gray-700" dir="rtl">{result.summary_urdu}</p>
+                    <h3 className="font-semibold mb-2 text-pink-900" dir="rtl">{result.title}</h3>
+                    <p className="text-gray-800 text-base leading-relaxed" dir="rtl">{result.summary_urdu}</p>
                   </CardContent>
                 </Card>
               </div>

@@ -1,6 +1,11 @@
 import { supabase } from '@/lib/supabase';
 import { NextResponse } from 'next/server';
 
+// All code has been removed for cleanup.
+}
+import { supabase } from '@/lib/supabase';
+import { NextResponse } from 'next/server';
+
 export async function GET() {
   try {
     console.log('DB Test: Testing Supabase connection...');
