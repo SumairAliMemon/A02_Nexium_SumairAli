@@ -96,7 +96,7 @@ export default function Home() {
         setSummaries(data.data.summaries);
         setSummaryPagination(data.data.pagination);
       }
-    } catch (err) {
+  } catch {
       setError('Failed to fetch summaries');
     } finally {
       setLoadingData(false);
@@ -112,7 +112,7 @@ export default function Home() {
         setFullTexts(data.data.full_texts);
         setFullTextPagination(data.data.pagination);
       }
-    } catch (err) {
+  } catch {
       setError('Failed to fetch full texts');
     } finally {
       setLoadingData(false);

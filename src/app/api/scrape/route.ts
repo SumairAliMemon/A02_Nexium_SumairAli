@@ -54,7 +54,7 @@ export async function POST(request: NextRequest) {
 
     console.log('API Route: Saving to Supabase...');
     // Save to Supabase (summary only)
-    const { data: supabaseData, error: supabaseError } = await supabase
+    const { error: supabaseError } = await supabase
       .from('blog_summaries')
       .insert({
         url: scrapedContent.url,

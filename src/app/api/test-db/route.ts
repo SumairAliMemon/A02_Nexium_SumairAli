@@ -5,15 +5,15 @@ export async function GET() {
   try {
     console.log('DB Test: Testing Supabase connection...');
     
-    // Test the connection by trying to create the table
-    const { data, error } = await supabase.rpc('version');
+    // Test the connection by calling version RPC
+    const { data: version, error } = await supabase.rpc('version');
     
     if (error) {
       console.error('DB Test: Supabase connection failed:', error);
       return NextResponse.json({ error: 'Database connection failed', details: error }, { status: 500 });
     }
     
-    console.log('DB Test: Supabase connected successfully');
+    console.log('DB Test: Supabase connected successfully, version:', version);
     
     // Test inserting a record
     const { data: insertData, error: insertError } = await supabase
