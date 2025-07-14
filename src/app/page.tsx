@@ -1,6 +1,7 @@
 
 'use client';
 
+import ScrambledText from '@/components/ScrambledText';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -135,9 +136,15 @@ export  default function Home() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#0d1117] via-[#161b22] to-[#21262d] font-inter p-2 md:p-6 transition-colors duration-700">
       <div className="max-w-4xl mx-auto">
-        <h1 className="text-4xl md:text-5xl font-extrabold text-center mb-10 tracking-tight">
-          <span className="bg-clip-text text-transparent bg-gradient-to-r from-[#f43f5e] via-[#f59e42] to-[#38bdf8] animate-gradient-x">Blog Scraper & AI Summarizer</span>
-        </h1>
+        <ScrambledText
+          className="text-4xl md:text-5xl font-extrabold text-center mb-10 tracking-tight"
+          radius={120}
+          duration={1.2}
+          speed={0.5}
+          scrambleChars={'.:'}
+        >
+          BlogBriefBot
+        </ScrambledText>
         {/* GitHub-style Navigation Buttons */}
         <div className="flex flex-wrap justify-center gap-4 mb-10">
           <Button 
@@ -267,11 +274,11 @@ export  default function Home() {
                         <div className="grid gap-4 md:grid-cols-2">
                           <div>
                             <h4 className="font-semibold mb-2">English Summary</h4>
-                            <p className="text-gray-700 text-sm">{summary.summary}</p>
+                            <p className="text-gray-400 text-sm">{summary.summary}</p>
                           </div>
                           <div>
                             <h4 className="font-semibold mb-2">Urdu Translation</h4>
-                            <p className="text-gray-700 text-sm" dir="rtl">{summary.summary_urdu}</p>
+                            <p className="text-gray-400 text-sm" dir="rtl">{summary.summary_urdu}</p>
                           </div>
                         </div>
                       </CardContent>
@@ -311,7 +318,7 @@ export  default function Home() {
                 {fullTexts.length === 0 ? (
                   <Card>
                     <CardContent className="pt-6">
-                      <p className="text-center text-gray-500">No full texts found</p>
+                      <p className="text-center text-gray-400">No full texts found</p>
                     </CardContent>
                   </Card>
                 ) : (
@@ -328,7 +335,7 @@ export  default function Home() {
                       </CardHeader>
                       <CardContent>
                         <div className="max-h-96 overflow-y-auto">
-                          <p className="text-gray-700 text-sm whitespace-pre-wrap">{fullText.content}</p>
+                          <p className="text-gray-400 text-sm whitespace-pre-wrap">{fullText.content}</p>
                         </div>
                       </CardContent>
                     </Card>
