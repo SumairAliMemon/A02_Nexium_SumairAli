@@ -6,6 +6,9 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { FullTextCardSkeleton, SummaryCardSkeleton } from '@/components/ui/card-skeleton';
 import { Input } from '@/components/ui/input';
+import { fetchFullTexts } from '@/store/fullTextsSlice';
+import { useAppDispatch, useAppSelector } from '@/store/hooks';
+import { fetchSummaries } from '@/store/summariesSlice';
 import { Loader2 } from 'lucide-react';
 import { useState } from 'react';
 
@@ -16,44 +19,19 @@ interface ScrapeResult {
   full_text: string;
 }
 
-interface Summary {
-  id: string;
-  url: string;
-  title: string;
-  summary: string;
-  summary_urdu: string;
-  created_at: string;
-}
-
-interface FullText {
-  _id: string;
-  url: string;
-  title: string;
-  content: string;
-  scraped_at: string;
-}
-
-interface PaginationData {
-  current_page: number;
-  total_pages: number;
-  total_count: number;
-  per_page: number;
-}
-
-
-export  default function Home() {
+export default function Home() {
   const [url, setUrl] = useState('');
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<ScrapeResult | null>(null);
   const [error, setError] = useState('');
   
+  // Redux state and actions
+  const dispatch = useAppDispatch();
+  const summariesState = useAppSelector((state) => state.summaries);
+  const fullTextsState = useAppSelector((state) => state.fullTexts);
+  
   // View states
   const [viewMode, setViewMode] = useState<'scraper' | 'summaries' | 'full-texts'>('scraper');
-  const [summaries, setSummaries] = useState<Summary[]>([]);
-  const [fullTexts, setFullTexts] = useState<FullText[]>([]);
-  const [summaryPagination, setSummaryPagination] = useState<PaginationData | null>(null);
-  const [fullTextPagination, setFullTextPagination] = useState<PaginationData | null>(null);
-  const [loadingData, setLoadingData] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -90,48 +68,30 @@ export  default function Home() {
     }
   };
 
-  const fetchSummaries = async (page: number = 1) => {
-    setLoadingData(true);
-    try {
-      const response = await fetch(`/api/summaries?page=${page}`);
-      const data = await response.json();
-      if (data.success) {
-        setSummaries(data.data.summaries);
-        setSummaryPagination(data.data.pagination);
-      }
-  } catch {
-      setError('Failed to fetch summaries');
-    } finally {
-      setLoadingData(false);
-    }
-  };
-
-  const fetchFullTexts = async (page: number = 1) => {
-    setLoadingData(true);
-    try {
-      const response = await fetch(`/api/full-texts?page=${page}`);
-      const data = await response.json();
-      if (data.success) {
-        setFullTexts(data.data.full_texts);
-        setFullTextPagination(data.data.pagination);
-      }
-  } catch {
-      setError('Failed to fetch full texts');
-    } finally {
-      setLoadingData(false);
-    }
-  };
-
   const handleViewChange = (mode: 'scraper' | 'summaries' | 'full-texts') => {
     setViewMode(mode);
     setError('');
     setResult(null);
     
     if (mode === 'summaries') {
-      fetchSummaries();
+      // Only fetch if we haven't fetched before or if we need to refresh
+      if (!summariesState.lastFetchedPage) {
+        dispatch(fetchSummaries(1));
+      }
     } else if (mode === 'full-texts') {
-      fetchFullTexts();
+      // Only fetch if we haven't fetched before or if we need to refresh
+      if (!fullTextsState.lastFetchedPage) {
+        dispatch(fetchFullTexts(1));
+      }
     }
+  };
+
+  const handleSummariesPageChange = (page: number) => {
+    dispatch(fetchSummaries(page));
+  };
+
+  const handleFullTextsPageChange = (page: number) => {
+    dispatch(fetchFullTexts(page));
   };
 
   return (
@@ -247,7 +207,7 @@ export  default function Home() {
         {/* Summaries View */}
         {viewMode === 'summaries' && (
           <>
-            {loadingData ? (
+            {summariesState.loading ? (
               <div className="space-y-4">
                 {Array.from({ length: 3 }).map((_, i) => (
                   <SummaryCardSkeleton key={i} />
@@ -255,14 +215,14 @@ export  default function Home() {
               </div>
             ) : (
               <div className="space-y-4">
-                {summaries.length === 0 ? (
+                {summariesState.summaries.length === 0 ? (
                   <Card>
                     <CardContent className="pt-6">
                       <p className="text-center text-gray-400">No summaries found</p>
                     </CardContent>
                   </Card>
                 ) : (
-                  summaries.map((summary) => (
+                  summariesState.summaries.map((summary) => (
                     <Card key={summary.id}>
                       <CardHeader>
                         <CardTitle className="text-lg text-gray-100">{summary.title}</CardTitle>
@@ -290,14 +250,14 @@ export  default function Home() {
                 )}
                 
                 {/* Pagination for Summaries */}
-                {summaryPagination && summaryPagination.total_pages > 1 && (
+                {summariesState.pagination && summariesState.pagination.total_pages > 1 && (
                   <div className="flex justify-center gap-2 mt-6">
-                    {Array.from({ length: summaryPagination.total_pages }, (_, i) => (
+                    {Array.from({ length: summariesState.pagination.total_pages }, (_, i) => (
                       <Button
                         key={i + 1}
-                        variant={summaryPagination.current_page === i + 1 ? 'default' : 'outline'}
+                        variant={summariesState.pagination?.current_page === i + 1 ? 'default' : 'outline'}
                         size="sm"
-                        onClick={() => fetchSummaries(i + 1)}
+                        onClick={() => handleSummariesPageChange(i + 1)}
                       >
                         {i + 1}
                       </Button>
@@ -312,7 +272,7 @@ export  default function Home() {
         {/* Full Texts View */}
         {viewMode === 'full-texts' && (
           <>
-            {loadingData ? (
+            {fullTextsState.loading ? (
               <div className="space-y-4">
                 {Array.from({ length: 3 }).map((_, i) => (
                   <FullTextCardSkeleton key={i} />
@@ -320,14 +280,14 @@ export  default function Home() {
               </div>
             ) : (
               <div className="space-y-4">
-                {fullTexts.length === 0 ? (
+                {fullTextsState.fullTexts.length === 0 ? (
                   <Card>
                     <CardContent className="pt-6">
                       <p className="text-center text-gray-400">No full texts found</p>
                     </CardContent>
                   </Card>
                 ) : (
-                  fullTexts.map((fullText) => (
+                  fullTextsState.fullTexts.map((fullText) => (
                     <Card key={fullText._id}>
                       <CardHeader>
                         <CardTitle className="text-lg text-gray-100">{fullText.title}</CardTitle>
@@ -348,14 +308,14 @@ export  default function Home() {
                 )}
                 
                 {/* Pagination for Full Texts */}
-                {fullTextPagination && fullTextPagination.total_pages > 1 && (
+                {fullTextsState.pagination && fullTextsState.pagination.total_pages > 1 && (
                   <div className="flex justify-center gap-2 mt-6">
-                    {Array.from({ length: fullTextPagination.total_pages }, (_, i) => (
+                    {Array.from({ length: fullTextsState.pagination.total_pages }, (_, i) => (
                       <Button
                         key={i + 1}
-                        variant={fullTextPagination.current_page === i + 1 ? 'default' : 'outline'}
+                        variant={fullTextsState.pagination?.current_page === i + 1 ? 'default' : 'outline'}
                         size="sm"
-                        onClick={() => fetchFullTexts(i + 1)}
+                        onClick={() => handleFullTextsPageChange(i + 1)}
                       >
                         {i + 1}
                       </Button>
