@@ -4,6 +4,7 @@
 import ScrambledText from '@/components/ScrambledText';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { FullTextCardSkeleton, SummaryCardSkeleton } from '@/components/ui/card-skeleton';
 import { Input } from '@/components/ui/input';
 import { Loader2 } from 'lucide-react';
 import { useState } from 'react';
@@ -187,7 +188,7 @@ export  default function Home() {
           <>
             <Card className="mb-10 shadow-xl border-2 border-indigo-400/30">
               <CardHeader>
-                <CardTitle className="text-xl md:text-2xl font-bold">Enter Blog URL</CardTitle>
+                <CardTitle className="text-xl md:text-2xl font-bold text-gray-100">Enter Blog URL</CardTitle>
                 <CardDescription className="text-base text-gray-300">
                   Paste any blog URL to extract, summarize, and translate content
                 </CardDescription>
@@ -247,25 +248,27 @@ export  default function Home() {
         {viewMode === 'summaries' && (
           <>
             {loadingData ? (
-              <div className="flex justify-center items-center py-8">
-                <Loader2 className="w-8 h-8 animate-spin" />
+              <div className="space-y-4">
+                {Array.from({ length: 3 }).map((_, i) => (
+                  <SummaryCardSkeleton key={i} />
+                ))}
               </div>
             ) : (
               <div className="space-y-4">
                 {summaries.length === 0 ? (
                   <Card>
                     <CardContent className="pt-6">
-                      <p className="text-center text-gray-500">No summaries found</p>
+                      <p className="text-center text-gray-400">No summaries found</p>
                     </CardContent>
                   </Card>
                 ) : (
                   summaries.map((summary) => (
                     <Card key={summary.id}>
                       <CardHeader>
-                        <CardTitle className="text-lg">{summary.title}</CardTitle>
+                        <CardTitle className="text-lg text-gray-100">{summary.title}</CardTitle>
                         <CardDescription>
                           <a href={summary.url} target="_blank" rel="noopener noreferrer" 
-                             className="text-blue-600 hover:underline">
+                             className="text-blue-400 hover:text-blue-300 hover:underline">
                             {summary.url}
                           </a>
                         </CardDescription>
@@ -273,12 +276,12 @@ export  default function Home() {
                       <CardContent>
                         <div className="grid gap-4 md:grid-cols-2">
                           <div>
-                            <h4 className="font-semibold mb-2">English Summary</h4>
-                            <p className="text-gray-400 text-sm">{summary.summary}</p>
+                            <h4 className="font-semibold mb-2 text-gray-200">English Summary</h4>
+                            <p className="text-gray-300 text-sm">{summary.summary}</p>
                           </div>
                           <div>
-                            <h4 className="font-semibold mb-2">Urdu Translation</h4>
-                            <p className="text-gray-400 text-sm" dir="rtl">{summary.summary_urdu}</p>
+                            <h4 className="font-semibold mb-2 text-gray-200">Urdu Translation</h4>
+                            <p className="text-gray-300 text-sm" dir="rtl">{summary.summary_urdu}</p>
                           </div>
                         </div>
                       </CardContent>
@@ -310,8 +313,10 @@ export  default function Home() {
         {viewMode === 'full-texts' && (
           <>
             {loadingData ? (
-              <div className="flex justify-center items-center py-8">
-                <Loader2 className="w-8 h-8 animate-spin" />
+              <div className="space-y-4">
+                {Array.from({ length: 3 }).map((_, i) => (
+                  <FullTextCardSkeleton key={i} />
+                ))}
               </div>
             ) : (
               <div className="space-y-4">
@@ -325,17 +330,17 @@ export  default function Home() {
                   fullTexts.map((fullText) => (
                     <Card key={fullText._id}>
                       <CardHeader>
-                        <CardTitle className="text-lg">{fullText.title}</CardTitle>
+                        <CardTitle className="text-lg text-gray-100">{fullText.title}</CardTitle>
                         <CardDescription>
                           <a href={fullText.url} target="_blank" rel="noopener noreferrer" 
-                             className="text-blue-600 hover:underline">
+                             className="text-blue-400 hover:text-blue-300 hover:underline">
                             {fullText.url}
                           </a>
                         </CardDescription>
                       </CardHeader>
                       <CardContent>
                         <div className="max-h-96 overflow-y-auto">
-                          <p className="text-gray-400 text-sm whitespace-pre-wrap">{fullText.content}</p>
+                          <p className="text-gray-300 text-sm whitespace-pre-wrap">{fullText.content}</p>
                         </div>
                       </CardContent>
                     </Card>
